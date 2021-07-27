@@ -1,0 +1,465 @@
+// 2020-02-06 이성일 
+// API 브랜드 설정 정보를 json 에 저장
+// 기존 web.config 및 cs 파일에 설정한 API 브랜드 정보를 json 에 정의한 후
+// APIBrandConfigHelper 를 통해 Deserializing 해서 사용 한다.
+// 이 설정은 Delivery API V2 만 적용 한다.
+{
+  // 현재 APIRepository 버전
+  // OLD = 기존 내부 쿼리 및 기존 프로시저 사용
+  // NEW = 신규 프로시저 사용
+  "APIRepositoryVersion": "NEW",
+
+  //"MongoDBConnectionString": "mongodb://b2b_api:ivc11)(*&@211.43.211.6:30303/?authSource=B2B_ORDER_CACHE",
+  "MongoDBConnectionString": "mongodb://b2b_api:ivc11)(*&@localhost:50505/?authSource=B2B_ORDER_CACHE&maxPoolSize=300&connectTimeoutMS=3000&socketTimeoutMS=3000&serverSelectionTimeoutMS=1500",
+  "TestMongoDBConnectionString": "mongodb://b2b_api:ivc11)(*&@192.168.11.128:50505/?authSource=B2B_ORDER_CACHE&maxPoolSize=300&connectTimeoutMS=3000&socketTimeoutMS=3000&serverSelectionTimeoutMS=1500",
+  "MongoDBDataBase": "B2B_ORDER_CACHE",
+  // "MongoDBCacheMaxCount" : MongoDB 데이터 저장 갯수 (1,000,000, 백만개)
+  "MongoDBCacheMaxCount": 1000000,
+  // CacheOperationMode : 
+  // MONGO_DB_DATA_COLLECT => 데이터 수집 및 캐시 사용안함 (무조건 카카오 API 호출)
+  // USE_MONGO_DB_CACHE => 캐시 데이터 사용 (캐시 데이터 있으면 캐시 데이터 사용. 없으면 카카오 API 호출)
+  // NONE => 데이터 수집, MongoDB 캐시 데이터 사용 둘다 안함
+  //"CacheOperationMode": "MONGO_DB_DATA_COLLECT",
+  "CacheOperationMode": "NONE",
+  "AES256Key": "FRcWn3eJkyQz+LPllU4XqQ==abcdefgh",
+  "AES256IV": "1,5,3,1,6,7,3,4,3,5,3,3,1,4,1,7",
+  // 이성일 개인 계정 (ahehhehzard@gmail.com) 35857c5fc279ce0dee896c64a56055c9
+  // 2020-10-05 이성일 : 카카오 REST API 키를 생각대로 공용 키로 변경 (bf117b79618e4aaba584515544754bbb)
+  "KakaoRestAPIKey": "bf117b79618e4aaba584515544754bbb",
+
+  // 2020-06-29 이성일 : 카카오 API KEY 복수 처리. API 사용량 초과 시 다른 KEY 를 사용하여 호출한다.
+  // 2020-10-05 이성일 : 카카오 REST API 키를 생각대로 공용 키로 변경 (bf117b79618e4aaba584515544754bbb)
+  "KakaoRestAPIKeyList": [
+    "KakaoAK bf117b79618e4aaba584515544754bbb", // 생각대로 공용 키 (ID : 201295)
+    "KakaoAK 35857c5fc279ce0dee896c64a56055c9", // 이성일 개인 계정 (ahehhehzard@gmail.com)
+    "KakaoAK d6f135c0be59ac20681202833f31f1aa", // 이성일 개인 계정 (dig870203@gmail.com)
+    "KakaoAK 38aea87c994d6505b68de29d4f02c318", // 이성일 개인 계정 (dig0203@naver.com)
+    "KakaoAK 40252f2b8253cea42c7f43c102297c54", // OP팀 윤보람 대리 개인 계정
+    "KakaoAK eb1f2c3afc9a0e5e9b4622879a3cb0e7" // OP팀 이성완 대리 개인 계정 (logiall1234@naver.com)
+  ],
+  // 카카오 API 사용량 초과 시 Response (수정금지)
+  "KakaoRestAPILimitExceedResponse": {
+    "code": "-10",
+    "msg": "API limit has been exceeded.",
+    "errorType": "RequestThrottled",
+    "message": "API limit has been exceeded."
+  },
+  "SDMapAPIKey": "tpjsZHSu8ag=",
+  "ApplicationJson": "application/json",
+  "ApplicationJsonWithUTF8": "application/json;charset=utf-8",
+
+  // 내비게이션 거리 계산 옵션 
+  // "DAWUL" => 다울 내비게이션 거리 계산
+  // "LEGACY" => EKSYS 내비게이션 거리 계산
+  "NavigationDistanceType": "DAWUL",
+
+  // 가맹점/지점 요금 계산 방식에 따라 내비게이션 거리 계산 옵션 
+  // true => 가맹점/지점 요금계산 방식이 내비게이션 거리 인 경우에, 내비게이션 거리 계산
+  // false => 무조건 내비게이션 거리 계산
+  "IsCalculateNavigationDistanceByDistanceAmountType": false,
+
+  // Geocoding 옵션 
+  // "DAWUL_FIRST" => 다울 Geocoding 호출 후, 데이터가 없으면 카카오 Geocoding 호출  
+  // "KAKAO_FIRST" => 카카오 Geocoding 호출 후, 데이터가 없으면 다울 Geocoding 호출
+  // "DAWUL_ONLY" => 다울 Geocoding 호출만 호출
+  // "KAKAO_ONLY" => 카카오 Geocoding 호출만 호출
+  "GeocodingOption": "DAWUL_FIRST",
+
+  // 내비게이션 거리 계산 방식
+  // SHORT_DIST (기본값) : 출발지 기준으로 1회, 도착지 기준으로 1회 총 2회 계산 후 짧은 거리 사용
+  // LONG_DIST : 출발지 기준으로 1회, 도착지 기준으로 1회 총 2회 계산 후 긴 거리 사용
+  // START_FIRST : 출발지 기준으로 1회 계산 후 거리 사용
+  // DEST_FIRST : 도착지 기준으로 1회 계산 후 거리 사용
+  "NavigationDistanceCalculateType": "SHORT_DIST",
+
+  // 다울맵 API 상수 값 정의
+  "DawulMapValues": {
+    "DAWUL_MAP_ADDRESS_BASE": "http://dawul.insungdata.com:8000/MapAppServer/DWService",
+    "DAWUL_MAP_KEY": "29e1c140ba33bda4dc9493759724ee4d153fa6b7",
+    "DAWUL_MAP_FORMAT": "JSON",
+    "NAVIGATION_SERVICE_NAME": "CAR_ROUTE",
+    "GEOCODING_SERVICE_NAME": "GEOCODING",
+    "PROJECTION_SERVICE_NAME": "PROJECTION",
+    "PATH_FIND_TYPE_DISTANCE": "DISTANCE",
+    "EXCEPTION_FEATURE": "FEATURE",
+    "NET_METHOD": "JNI",
+    "GEOCODING_ADDRESS_TYPE_L": "L",
+    "GEOCODING_ADDRESS_TYPE_ROAD": "S",
+    "GEOCODING_ADDRESS_TYPE_H": "H",
+    "GEOCODING_ADDRESS_TYPES": [ "L", "S", "H" ],
+    "GEOCODING_LANGUAGE": "KOR",
+    "GEOCODING_GEO_TYPE": "CENTER",
+    "GEOCODING_GPS_TYPE": "GRS_80",
+    "REVERSE_GEOCODING_ADMIN_TYPE_JIBUN": "JIBUN_ADDRESS",
+    "REVERSE_GEOCODING_ADMIN_TYPE_ROAD": "ROAD_ADDRESS",
+    "REVERSE_GEOCODING_SPATIAL_OPERATION_INTERSACT": "INTERSACT",
+    "REVERSE_GEOCODING_SPATIAL_OPERATION_CONTAIN": "CONTAIN"
+  },
+
+  // 물류배송가능(불가)구역 처리방식 : 1(첫번째방식), 2(두번째방식), 3(세번째방식)
+  "APIDeliverableTypeForParcelDelivery": "3",
+
+  // 생활물류 배송 연동사 Prefix
+  // 생활물류 연동사 추가 시, 여기에 설정 추가
+  "DailyLifeLogisticsTypes": [ "KTU" ],
+
+  "KeyAuthenticationAPI": "http://check.sdapi.kr/cryptTEST",
+  "KeyAuthenticationAPITEST": "http://check.sdapi.kr/cryptTEST",
+  "AbnormalRequestCheckAPI": "http://check.sdapi.kr/order_check",
+  "APIShopMappingForParcelDelivery": [
+    {
+      "Name": "ZOOMMA_HOMEPICK_ZMA00",
+      "APICode": "ZMA00",
+      "AreaShopMapping": [
+        {
+          "Area": "서울 강남구",
+          "ShopCodePrefix": "HOMEPICK%"
+        },
+        {
+          "Area": "서울 송파구",
+          "ShopCodePrefix": "HOMEPICK%"
+        },
+        {
+          "Area": "경기 성남시",
+          "ShopCodePrefix": "HOMEPICK%"
+        },
+        {
+          "Area": "경기 용인시",
+          "ShopCodePrefix": "HOMEPICK%"
+        }
+      ]
+    },
+    {
+      "Name": "ZOOMMA_HOMEPICK_ZMA01",
+      "APICode": "ZMA01",
+      "AreaShopMapping": [
+        {
+          "Area": "서울 강남구",
+          "ShopCodePrefix": "ZGN%"
+        },
+        {
+          "Area": "서울 서초구",
+          "ShopCodePrefix": "ZGN%"
+        },
+        {
+          "Area": "서울 송파구",
+          "ShopCodePrefix": "ZSP%"
+        },
+        {
+          "Area": "서울 양천구",
+          "ShopCodePrefix": "ZYC%"
+        },
+        {
+          "Area": "서울 강서구",
+          "ShopCodePrefix": "ZGU%"
+        },
+        {
+          "Area": "경기 성남시",
+          "ShopCodePrefix": "ZSN%"
+        },
+        {
+          "Area": "대구 달서구",
+          "ShopCodePrefix": "ZDS%"
+        },
+        {
+          "Area": "대구 달성군",
+          "ShopCodePrefix": "ZDG%"
+        },
+        {
+          "Area": "대구 동구",
+          "ShopCodePrefix": "ZDB%"
+        },
+        {
+          "Area": "대구 북구",
+          "ShopCodePrefix": "ZBG%"
+        },
+        {
+          "Area": "대구 서구",
+          "ShopCodePrefix": "ZBG%"
+        },
+        {
+          "Area": "대구 수성구",
+          "ShopCodePrefix": "ZSU%"
+        }
+      ]
+    },
+    {
+      "Name": "MOBILE_PHONE_DELIVERY_KT00",
+      "APICode": "KT00",
+      "AreaShopMapping": [
+        {
+          "Area": "서울 강남구",
+          "ShopCodePrefix": "KGN%"
+        },
+        {
+          "Area": "서울 서초구",
+          "ShopCodePrefix": "KGN%"
+        },
+        {
+          "Area": "서울 송파구",
+          "ShopCodePrefix": "KSP%"
+        },
+        {
+          "Area": "경기 성남시",
+          "ShopCodePrefix": "KSN%"
+        },
+        {
+          "Area": "경기 용인시",
+          "ShopCodePrefix": "KYI%"
+        }
+      ]
+    },
+    {
+      "Name": "MOBILE_PHONE_DELIVERY_KT01",
+      "APICode": "KT01",
+      "AreaShopMapping": [
+        {
+          "Area": "서울 강남구",
+          "ShopCodePrefix": "KGN%"
+        },
+        {
+          "Area": "서울 서초구",
+          "ShopCodePrefix": "KGN%"
+        },
+        {
+          "Area": "서울 송파구",
+          "ShopCodePrefix": "KSP%"
+        },
+        {
+          "Area": "경기 성남시",
+          "ShopCodePrefix": "KSN%"
+        },
+        {
+          "Area": "경기 용인시",
+          "ShopCodePrefix": "KYI%"
+        }
+      ]
+    }
+  ],
+  "Configs": [
+    {
+      "Name": "BurgerKing",
+      "Description": "버거킹",
+      "TestLoggerName": "BurgerKing_TEST",
+      "LiveLoggerName": "BurgerKing_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "KeyValidationKeyword": "BGKING",
+      "APICodes": [
+        {
+          "Code": "BKR00",
+          "CodeGroup": "APP",
+          "Description": "버거킹 테스트",
+          "APIKey": "Vgf1TZl9b7KC7Ox+eMK/qQ==",
+          "IsTest": true
+        },
+        {
+          "Code": "BKR01",
+          "CodeGroup": "APP",
+          "Description": "버거킹 (가맹점)",
+          "APIKey": "65097R8nwvqP9SoCkB1ppw==",
+          "IsTest": false
+        },
+        {
+          "Code": "BKR02",
+          "Description": "버거킹 (직영)",
+          "CodeGroup": "API",
+          "APIKey": "65097R8nwvqP9SoCkB1ppw==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "Callssenger",
+      "Description": "콜신져",
+      "TestLoggerName": "Callssenger_TEST",
+      "LiveLoggerName": "Callssenger_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "CSG00",
+          "CodeGroup": "APP",
+          "Description": "콜신져 테스트",
+          "APIKey": "SDrmW9wrJFqQCOxYOqSVng==",
+          "IsTest": true
+        },
+        {
+          "Code": "CSG01",
+          "CodeGroup": "APP",
+          "Description": "콜신져",
+          "APIKey": "5Ab4oMaUMAw4r5cpWU0lPQ==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "CloudKitchen",
+      "Description": "클라우드키친",
+      "TestLoggerName": "CloudKitchen_TEST",
+      "LiveLoggerName": "CloudKitchen_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "CLK00",
+          "CodeGroup": "APP",
+          "Description": "클라우드키친 테스트",
+          "APIKey": "2m/zJFmcsZzl3uMTBjXBLlh5FSUOinmx",
+          "IsTest": true
+        },
+        {
+          "Code": "CLK01",
+          "CodeGroup": "APP",
+          "Description": "클라우드키친",
+          "APIKey": "GszhebqZT4CJgeKqSORXRMOJVEC6pWPE",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "Sensicon",
+      "Description": "센시콘",
+      "TestLoggerName": "NowBusking_TEST",
+      "LiveLoggerName": "NowBusking_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "SC00",
+          "CodeGroup": "APP",
+          "Description": "센시콘 테스트",
+          "APIKey": "TJX7YdA3ZI4SRbL9xlF4iw==",
+          "IsTest": true
+        },
+        {
+          "Code": "SC01",
+          "CodeGroup": "APP",
+          "Description": "센시콘 라이브",
+          "APIKey": "TJX7YdA3ZI5Nb5HLHxOJaQ==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "NowBusking",
+      "Description": "나우버스킹",
+      "TestLoggerName": "NowBusking_TEST",
+      "LiveLoggerName": "NowBusking_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "NBG00",
+          "CodeGroup": "APP",
+          "Description": "나우버스킹 테스트",
+          "APIKey": "hS0EbqekP+2kaoKpWhvyhA==",
+          "IsTest": true
+        },
+        {
+          "Code": "NBG01",
+          "CodeGroup": "APP",
+          "Description": "나우버스킹 라이브",
+          "APIKey": "KR2YnHMF/JtHPb7IgoggAw==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "KONA_I",
+      "Description": "코나아이",
+      "TestLoggerName": "KONA_I_TEST",
+      "LiveLoggerName": "KONA_I_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "KNI00",
+          "CodeGroup": "APP",
+          "Description": "코나아이 테스트",
+          "APIKey": "FN7XkPM5/Q6elh1GN5kNCw==",
+          "IsTest": true
+        },
+        {
+          "Code": "KNI01",
+          "CodeGroup": "APP",
+          "Description": "코나아이 라이브",
+          "APIKey": "hGup3gxGqr1JOaoJsJfALA==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "MOS_BURGER",
+      "Description": "MOS버거",
+      "TestLoggerName": "MOS_BURGER_TEST",
+      "LiveLoggerName": "MOS_BURGER_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "MSB00",
+          "CodeGroup": "APP",
+          "Description": "MOS버거 테스트",
+          "APIKey": "hdV4u/j122GWvGItMyOGoA==",
+          "IsTest": true
+        },
+        {
+          "Code": "MSB01",
+          "CodeGroup": "APP",
+          "Description": "MOS버거 라이브",
+          "APIKey": "CbIfbnVj8V33ROwtun5FPg==",
+          "IsTest": false
+        }
+      ]
+    },
+    {
+      "Name": "NICE_CU",
+      "Description": "NICE_CU",
+      "TestLoggerName": "NICE_CU_TEST",
+      "LiveLoggerName": "NICE_CU_LIVE",
+      "IsRestrictIP": false,
+      "PermittedIPs": [],
+      "IsEncryptAES256": false,
+      "IsExpired": false,
+      "ExpireDate": "",
+      "APICodes": [
+        {
+          "Code": "NIC00",
+          "CodeGroup": "APP",
+          "Description": "NICE CU 테스트",
+          "APIKey": "LrGWj7tzY8SzkJLcO6Qv9g==",
+          "IsTest": true
+        },
+        {
+          "Code": "NIC01",
+          "CodeGroup": "API",
+          "Description": "NICE CU 라이브",
+          "APIKey": "JHwICm5yZBqpvbX9Rcfrag==",
+          "IsTest": false
+        }
+      ]
+    }
+  ]
+}
