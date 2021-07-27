@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using System.Text.Json;
-using ApiModels;
-using ApiHelpers;
+﻿using ApiHelpers;
 using ApiLogManager;
-using System.Web;
+using ApiModels;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace APITest.Controllers
 {
